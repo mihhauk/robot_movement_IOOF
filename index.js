@@ -5,12 +5,53 @@ var fs = require('fs');
 const tableSize = 5;
 const directions = ['NORTH', 'EAST', 'SOUTH', 'WEST']
 
+/// read commands from file and execute
+
+fs.readFile(process.argv[2], 'utf8', function(err, data) {
+    if(err) {
+        console.error("Could not open file: %s", err);
+    }
+    else {
+        var commands = parseCommands(data.split('\n'));
+    }
+});
+
+function parseCommands(lines) {
+    var commands = []
+    lines.forEach(function(stringCmd) {
+        var cmd = stringCmd.split(/[ ]+/);
+        var commandName = cmd[0].toLowerCase();
+        if (robot.hasOwnProperty(commandName)) {
+            if(commandName === 'place') {
+                var args = cmd[1].split(',');
+                robot.place(Number(args[0]), Number(args[1]), args[2])
+            }
+            else {
+                robot[commandName]();
+            }
+        }
+    });
+}
+
 /// robot implementation
 
 var robot = {
     currentPosition: {},
     place: function(x, y, f) {
-        robot.currentPosition = {x: x, y:y, facing: f};
+        if (x < 0 || x > tableSize - 1) {
+            console.log('x:', x, ' is not a vallid cooridnate, table size is:', tableSize)
+            return;
+        }
+        if (y < 0 || y > tableSize - 1) {
+            console.log('y:', y, ' is not a vallid cooridnate, table size is:', tableSize)
+            return;
+        }
+        if (directions.indexOf(f) === -1) {
+            console.log('facing direction', f,  'is invalid');
+            return;
+        }
+
+        robot.currentPosition = {x: x, y: y, facing: f};
     },
     move: function() {
         if(Object.keys(robot.currentPosition).length === 0) {
@@ -20,8 +61,11 @@ var robot = {
         return true;
         
     },
-    turn: function(direction) {
-        robot.currentPosition = turn(robot.currentPosition, direction)
+    left: function() {
+        robot.currentPosition = turn(robot.currentPosition, 'LEFT')
+    },
+    right: function() {
+        robot.currentPosition = turn(robot.currentPosition, 'RIGHT')
     },
     report: function() {
         console.log('current position: ' + JSON.stringify(robot.currentPosition));
