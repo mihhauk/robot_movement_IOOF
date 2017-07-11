@@ -62,9 +62,15 @@ var robot = {
         
     },
     left: function() {
+        if(Object.keys(robot.currentPosition).length === 0) {
+            return false;
+        }
         robot.currentPosition = turn(robot.currentPosition, 'LEFT')
     },
     right: function() {
+        if(Object.keys(robot.currentPosition).length === 0) {
+            return false;
+        }
         robot.currentPosition = turn(robot.currentPosition, 'RIGHT')
     },
     report: function() {
