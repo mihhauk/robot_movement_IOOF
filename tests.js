@@ -46,3 +46,82 @@ describe('turn', () => {
   });
 
 });
+
+
+describe('canMove', () => {
+
+  it('NORTH edge', () => {
+    var currentPosition = {
+      x:0, y:0,
+      facing: 'NORTH'
+    }
+    expect(index.canMove(currentPosition)).to.equal(false);
+  });
+
+  it('WEST edge', () => {
+    var currentPosition = {
+      x:0, y:0,
+      facing: 'WEST'
+    }
+    expect(index.canMove(currentPosition)).to.equal(false);
+  });
+
+  it('SOUTH edge', () => {
+    var currentPosition = {
+      x:0, y:index.tableSize - 1,
+      facing: 'WEST'
+    }
+    expect(index.canMove(currentPosition)).to.equal(false);
+  });
+
+  it('EAST edge', () => {
+    var currentPosition = {
+      x:index.tableSize - 1, y:0,
+      facing: 'EAST'
+    }
+    expect(index.canMove(currentPosition)).to.equal(false);
+  });
+
+  it('(0,0,EAST)', () => {
+    var currentPosition = {
+      x:0, y:0,
+      facing: 'EAST'
+    }
+    expect(index.canMove(currentPosition)).to.equal(true);
+  });
+
+  it('(0,0,SOUTH)', () => {
+    var currentPosition = {
+      x:0, y:0,
+      facing: 'SOUTH'
+    }
+    expect(index.canMove(currentPosition)).to.equal(true);
+  });
+  
+
+});
+
+describe('place robot on the table', () => {
+  var robot = index.robot;
+  it('not on the table', () => {
+    expect(robot.currentPosition).to.deep.equal({});
+  });
+  it('put on the table', () => {
+    robot.place(0,0,'SOUTH')
+    expect(robot.currentPosition.x).to.equal(0);
+    expect(robot.currentPosition.y).to.equal(0);
+    expect(robot.currentPosition.facing).to.equal('SOUTH');
+  });
+});
+
+describe('robot is moving as expected', () => {
+  var robot = index.robot;
+
+  it('one step', () => {
+    robot.place(0,0,'SOUTH')
+    robot.move();
+    expect(robot.currentPosition.x).to.equal(0);
+    expect(robot.currentPosition.y).to.equal(1);
+    expect(robot.currentPosition.facing).to.equal('SOUTH');
+  });
+});
