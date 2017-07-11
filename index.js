@@ -1,27 +1,34 @@
+var fs = require('fs');
+
+/// constants
+
+const tableSize = 5;
+const directions = ['NORTH', 'EAST', 'SOUTH', 'WEST']
+
+/// robot implementation
+
 var robot = {
     currentPosition: {},
-    move: function() {
-        if(robot.currentPosition) {
-            robot.currentPosition = move(robot.currentPosition)
-        }
-        else {
-            console.log('place robot on the table');
-        }
-    },
     place: function(x, y, f) {
         robot.currentPosition = {x: x, y:y, facing: f};
     },
+    move: function() {
+        if(Object.keys(robot.currentPosition).length === 0) {
+            return false;
+        }
+        robot.currentPosition = move(robot.currentPosition)
+        return true;
+        
+    },
+    turn: function(direction) {
+        robot.currentPosition = turn(robot.currentPosition, direction)
+    },
     report: function() {
-        console.log('current position: ' + robot.currentPosition);
+        console.log('current position: ' + JSON.stringify(robot.currentPosition));
     }
 }
-const tableSize = 5;
 
-const directions = ['NORTH', 'EAST', 'SOUTH', 'WEST']
-
-function place(x, y, f) {
-    return {x: x, y:y, }
-}
+/// Helper functions
 
 function move(currentPosition) {
     var newPosition = Object.assign({}, currentPosition);
@@ -69,10 +76,6 @@ function newFacingDirection(currentDirection, turnDirection) {
     }
 }
 
-
-// robot.place(0,0,'SOUTH')
-// robot.move();
-console.log(robot.currentPosition);
 module.exports = {
     newFacingDirection: newFacingDirection,
     turn: turn,
